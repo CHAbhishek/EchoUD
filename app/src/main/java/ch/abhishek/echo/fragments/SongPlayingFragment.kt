@@ -50,8 +50,8 @@ class SongPlayingFragment : Fragment() {
             val getcurrent =mediaplayer?.currentPosition
             startTimeText?.setText(String.format("%d:%d",
            TimeUnit.MILLISECONDS.toMinutes(getcurrent?.toLong() as Long),
-           TimeUnit.MILLISECONDS.toSeconds(getcurrent?.toLong() as Long)-
-           TimeUnit.MILLISECONDS.toSeconds( TimeUnit.MILLISECONDS.toMinutes(getcurrent?.toLong() as Long))))
+           TimeUnit.MILLISECONDS.toSeconds(getcurrent.toLong())-
+           TimeUnit.MILLISECONDS.toSeconds( TimeUnit.MILLISECONDS.toMinutes(getcurrent.toLong() ))))
             Handler().postDelayed(this, 1000)
 
         }
@@ -98,9 +98,9 @@ class SongPlayingFragment : Fragment() {
         currentSongHelper?.isLoop=false
 
         var path: String?=null
-        var _songTitle: String?=null
-        var _songArtist: String?=null
-        var _songId: Long =0
+        var _songTitle: String?
+        var _songArtist: String?
+        var _songId: Long
         try{
             path            = arguments?.getString("path")
             _songTitle      = arguments?.getString("songTitle")

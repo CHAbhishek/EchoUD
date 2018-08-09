@@ -42,12 +42,12 @@ class MainScreenFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         val view=inflater.inflate(R.layout.fragment_main_screen,container,false)
-        visibleLayout=view?.findViewById<RelativeLayout>(R.id.visibleLayout)
-        noSongs=view?.findViewById<RelativeLayout>(R.id.noSongs)
-        nowPlayingBottomBar=view?.findViewById<RelativeLayout>(R.id.hiddenBarMainScreen)
-        songTitle=view?.findViewById<TextView>(R.id.songTitleMainScreen)
-        playPauseButton=view?.findViewById<ImageButton>(R.id.playPauseButton)
-        recyclerView=view?.findViewById<RecyclerView>(R.id.contentMain)
+        visibleLayout=view?.findViewById(R.id.visibleLayout)
+        noSongs=view?.findViewById(R.id.noSongs)
+        nowPlayingBottomBar=view?.findViewById(R.id.hiddenBarMainScreen)
+        songTitle=view?.findViewById(R.id.songTitleMainScreen)
+        playPauseButton=view?.findViewById(R.id.playPauseButton)
+        recyclerView=view?.findViewById(R.id.contentMain)
         return view
     }
 
