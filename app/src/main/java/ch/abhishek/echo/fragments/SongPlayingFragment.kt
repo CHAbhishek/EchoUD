@@ -23,7 +23,7 @@ import ch.abhishek.echo.Songs
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 /**
  * A simple [Fragment] subclass.
  *
