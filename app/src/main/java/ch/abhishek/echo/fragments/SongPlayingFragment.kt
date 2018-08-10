@@ -183,7 +183,7 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper?.isShuffle=true
             currentSongHelper?.isLoop=false
             shuffleImageButton?.setBackgroundResource(R.drawable.shuffle_icon)
-            loopImageButton?.setBackgroundResource(R.drawable.loop_white_icon)
+            loopImageButton?.setBackgroundResource(R.drawable.loop_white_icon)//
 
         }
         else{
