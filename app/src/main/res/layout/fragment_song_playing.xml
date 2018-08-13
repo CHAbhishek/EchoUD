@@ -24,7 +24,7 @@
             app:av_wavesCount="50"
             app:av_layersCount="4"
             app:av_wavesColors="@array/rainbow"
-            app:av_backgroundColor="#0032a"
+            app:av_backgroundColor="#00032a"
             app:av_bubblesPerLayer="16"
             />
             <ImageButton
