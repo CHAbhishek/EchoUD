@@ -23,6 +23,7 @@ import ch.abhishek.echo.Songs
 import ch.abhishek.echo.adapters.FavoriteAdapter
 import ch.abhishek.echo.databases.EchoDatabase
 
+@Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS")
 class FavoriteFragment : Fragment() {
     var myActivity: Activity? = null
     var getSongsList: ArrayList<Songs>? = null
@@ -167,10 +168,10 @@ class FavoriteFragment : Fragment() {
            refreshList = ArrayList<Songs>()
            getListFromDatabase = favouriteContent?.queryDBList()
             val fetchListfromDevice = getSongsFromPhone()
-            if (fetchListfromDevice != null) {
+            if (true) {
                 for (i in 0..fetchListfromDevice.size - 1) {
                    for (j in 0..getListFromDatabase?.size as Int - 1) {
-                       if (getListFromDatabase?.get(j)?.songId === fetchListfromDevice?.get(i)?.songId) {
+                       if (getListFromDatabase?.get(j)?.songId === fetchListfromDevice.get(i).songId) {
                            refreshList?.add((getListFromDatabase as ArrayList<Songs>)
                                     [j])
                         }

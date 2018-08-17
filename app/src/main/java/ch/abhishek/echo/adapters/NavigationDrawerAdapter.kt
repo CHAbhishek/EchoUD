@@ -10,10 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ch.abhishek.echo.R
 import ch.abhishek.echo.activities.MainActivity
-import ch.abhishek.echo.fragments.AboutUsFragment
-import ch.abhishek.echo.fragments.FavouriteFragment
-import ch.abhishek.echo.fragments.MainScreenFragment
-import ch.abhishek.echo.fragments.SettingsFragment
+import ch.abhishek.echo.fragments.*
 
 class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntArray,
                               _context: Context)
@@ -39,7 +36,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
                             .commit()
                 }
                 1 -> {
-                    val favouriteFragment = FavouriteFragment()
+                    val favouriteFragment = FavoriteFragment()
                     (mContext as MainActivity).supportFragmentManager
                             .beginTransaction()
                             .replace(R.id.details_fragment, favouriteFragment)
