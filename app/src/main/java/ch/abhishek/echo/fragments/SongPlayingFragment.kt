@@ -5,15 +5,17 @@ package ch.abhishek.echo.fragments
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
@@ -58,6 +60,9 @@ class SongPlayingFragment : Fragment() {
         var fab: ImageButton? = null
 
         var favoriteContent:EchoDatabase?=null
+        var mSensorManager : SensorManager? = null
+        var mSensorListener : SensorEventListener?=null
+        var MY_PREFS_NAME = "ShakeFeature"
         var updateSongTime = object:Runnable{
             override fun run() {
                 val getcurrent =mediaplayer?.currentPosition
@@ -183,9 +188,9 @@ class SongPlayingFragment : Fragment() {
 
         }
     }
-
-
-
+          var mAcceleration : Float =0f
+          var mAccelerationCurrent: Float =0f
+          var mAccelerationLast:Float=0f
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -227,16 +232,32 @@ class SongPlayingFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Statified.audiovisualization?.onResume()
+        Statified.mSensorManager?.registerListener(Statified.mSensorListener,Statified.mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     override fun onPause() {
         super.onPause()
         Statified. audiovisualization?.onPause()
+        Statified.mSensorManager?.unregisterListener(Statified.mSensorListener)
     }
 
     override fun onDestroyView() {
         Statified.audiovisualization?.release()
         super.onDestroyView()
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Statified.mSensorManager =Statified.myActivity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mAcceleration = 0.0f
+        mAccelerationCurrent = SensorManager.GRAVITY_EARTH
+        mAccelerationLast = SensorManager.GRAVITY_EARTH
+        bindShakeListener()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
 
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -460,7 +481,30 @@ class SongPlayingFragment : Fragment() {
         }
     }
 
+       fun bindShakeListener(){
+           Statified.mSensorListener =object:SensorEventListener{
+               override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+                   }
 
+               override fun onSensorChanged(p0: SensorEvent) {
+                  val x = p0.values[0]
+                   val y = p0.values[1]
+                   val z = p0.values[2]
+
+                   mAccelerationLast=mAccelerationCurrent
+                   mAccelerationCurrent=Math.sqrt(((x*x+y*y+z*z).toDouble())).toFloat()
+                   val delta =mAccelerationCurrent-mAccelerationLast
+                   mAcceleration=mAcceleration* 0.9f + delta
+                   if(mAcceleration>12){
+                       val prefs = Statified.myActivity?.getSharedPreferences(Statified.MY_PREFS_NAME,Context.MODE_PRIVATE)
+                       val isAllowed = prefs?.getBoolean("feature",false)
+                       if(isAllowed as Boolean){
+                       Staticated.playNext("PlayNextNormal")
+                       }
+                   }
+                   }
+           }
+       }
 }
 
 
