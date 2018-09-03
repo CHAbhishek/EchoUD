@@ -41,10 +41,11 @@ class FavoriteFragment : Fragment() {
         var mediaPlayer: MediaPlayer? = null
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        activity!!.title="Favourites"
         val view = inflater.inflate(R.layout.fragment_favourite, container, false)
         noFavorites = view?.findViewById(R.id.noFavourites)
         nowPlayingBottomBar = view.findViewById(R.id.hiddenBarFavScreen)
-        songTitle = view.findViewById(R.id.songTitle)
+        songTitle = view.findViewById(R.id.songTitleFavScreen)
         playPauseButton = view.findViewById(R.id.playPauseButton)
         recyclerView = view.findViewById(R.id.favoriteRecycler)
         return view
@@ -83,14 +84,16 @@ class FavoriteFragment : Fragment() {
     }
     override fun onPrepareOptionsMenu(menu: Menu?) {
         super.onPrepareOptionsMenu(menu)
+        val item = menu?.findItem(R.id.action_sort)
+        item?.isVisible = false
     }
-   @SuppressLint("Recycle")
-   fun getSongsFromPhone(): ArrayList<Songs> {
+    @SuppressLint("Recycle")
+    fun getSongsFromPhone(): ArrayList<Songs> {
         var arrayList = ArrayList<Songs>()
         var contentResolver = myActivity?.contentResolver
-       var songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        var songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         var songCursor = contentResolver?.query(songUri, null, null, null, null)
-       if (songCursor != null && songCursor.moveToFirst()) {
+        if (songCursor != null && songCursor.moveToFirst()) {
             val songId = songCursor.getColumnIndex(MediaStore.Audio.Media._ID)
             val songTitle = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
             val songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
@@ -102,54 +105,54 @@ class FavoriteFragment : Fragment() {
                 var currentArtist = songCursor.getString(songArtist)
                 var currentData = songCursor.getString(songData)
                 var currentDate = songCursor.getLong(dateIndex)
-               arrayList.add(Songs(currentId, currentTitle, currentArtist, currentData,
+                arrayList.add(Songs(currentId, currentTitle, currentArtist, currentData,
                         currentDate))
             }
         }
-       return arrayList
+        return arrayList
     }
     fun bottomBarSetup() {
         try {
             bottomBarClickHandler()
 
             songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
-        SongPlayingFragment.Statified.mediaplayer?.setOnCompletionListener {
-            songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
-            SongPlayingFragment.Staticated.onSongComplete()
-        }
+            SongPlayingFragment.Statified.mediaplayer?.setOnCompletionListener {
+                songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
+                SongPlayingFragment.Staticated.onSongComplete()
+            }
             if (SongPlayingFragment.Statified.mediaplayer?.isPlaying as Boolean) {
                 nowPlayingBottomBar?.visibility = View.VISIBLE
             } else {
                 nowPlayingBottomBar?.visibility = View.INVISIBLE
             }
-       } catch (e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
     fun bottomBarClickHandler() {
-       nowPlayingBottomBar?.setOnClickListener {
-           Statified.mediaPlayer = SongPlayingFragment.Statified.mediaplayer
-           val songPlayingFragment = SongPlayingFragment()
-           var args = Bundle()
-           args.putString("songArtist",
-                   SongPlayingFragment.Statified.currentSongHelper?.songArtist)
-           args.putString("songTitle",
-                   SongPlayingFragment.Statified.currentSongHelper?.songTitle)
-           args.putString("path",
-                   SongPlayingFragment.Statified.currentSongHelper?.songPath)
-           args.putInt("SongID",
-                   SongPlayingFragment.Statified.currentSongHelper?.songId?.toInt() as Int)
-           args.putInt("songPosition",
-                   SongPlayingFragment.Statified.currentSongHelper?.currentPosition?.toInt() as Int)
-           args.putParcelableArrayList("songData",
-                   SongPlayingFragment.Statified.fetchSongs)
-           args.putString("FavBottomBar", "success")
-           songPlayingFragment.arguments = args
-           fragmentManager?.beginTransaction()
-                   ?.replace(R.id.details_fragment, songPlayingFragment)
-                   ?.addToBackStack("SongPlayingFragment")
-                   ?.commit()
-       }
+        nowPlayingBottomBar?.setOnClickListener {
+            Statified.mediaPlayer = SongPlayingFragment.Statified.mediaplayer
+            val songPlayingFragment = SongPlayingFragment()
+            var args = Bundle()
+            args.putString("songArtist",
+                    SongPlayingFragment.Statified.currentSongHelper?.songArtist)
+            args.putString("songTitle",
+                    SongPlayingFragment.Statified.currentSongHelper?.songTitle)
+            args.putString("path",
+                    SongPlayingFragment.Statified.currentSongHelper?.songPath)
+            args.putInt("SongID",
+                    SongPlayingFragment.Statified.currentSongHelper?.songId?.toInt() as Int)
+            args.putInt("songPosition",
+                    SongPlayingFragment.Statified.currentSongHelper?.currentPosition?.toInt() as Int)
+            args.putParcelableArrayList("songData",
+                    SongPlayingFragment.Statified.fetchSongs)
+            args.putString("FavBottomBar", "success")
+            songPlayingFragment.arguments = args
+            fragmentManager?.beginTransaction()
+                    ?.replace(R.id.details_fragment, songPlayingFragment)
+                    ?.addToBackStack("SongPlayingFragment")
+                    ?.commit()
+        }
         playPauseButton?.setOnClickListener {
             if (SongPlayingFragment.Statified.mediaplayer?.isPlaying as Boolean) {
                 SongPlayingFragment.Statified.mediaplayer?.pause()
@@ -164,26 +167,26 @@ class FavoriteFragment : Fragment() {
         }
     }
     fun display_favorites_by_searching() {
-       if (favouriteContent?.checkSize() as Int > 0) {
-           refreshList = ArrayList<Songs>()
-           getListFromDatabase = favouriteContent?.queryDBList()
+        if (favouriteContent?.checkSize() as Int > 0) {
+            refreshList = ArrayList<Songs>()
+            getListFromDatabase = favouriteContent?.queryDBList()
             val fetchListfromDevice = getSongsFromPhone()
             if (true) {
                 for (i in 0..fetchListfromDevice.size - 1) {
-                   for (j in 0..getListFromDatabase?.size as Int - 1) {
-                       if (getListFromDatabase?.get(j)?.songId === fetchListfromDevice.get(i).songId) {
-                           refreshList?.add((getListFromDatabase as ArrayList<Songs>)
+                    for (j in 0..getListFromDatabase?.size as Int - 1) {
+                        if (getListFromDatabase?.get(j)?.songId === fetchListfromDevice.get(i).songId) {
+                            refreshList?.add((getListFromDatabase as ArrayList<Songs>)
                                     [j])
                         }
                     }
                 }
             } else {
             }
-           if (refreshList == null) {
+            if (refreshList == null) {
                 recyclerView?.visibility = View.INVISIBLE
                 noFavorites?.visibility = View.VISIBLE
             } else {
-               val favoriteAdapter = FavoriteAdapter(refreshList as ArrayList<Songs>,
+                val favoriteAdapter = FavoriteAdapter(refreshList as ArrayList<Songs>,
                         myActivity as Context)
                 val mLayoutManager = LinearLayoutManager(activity)
                 recyclerView?.layoutManager = mLayoutManager
@@ -192,7 +195,7 @@ class FavoriteFragment : Fragment() {
                 recyclerView?.setHasFixedSize(true)
             }
         } else {
-           recyclerView?.visibility = View.INVISIBLE
+            recyclerView?.visibility = View.INVISIBLE
             noFavorites?.visibility = View.VISIBLE
         }
     }

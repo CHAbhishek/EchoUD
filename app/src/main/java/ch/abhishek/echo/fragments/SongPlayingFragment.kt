@@ -126,6 +126,14 @@ class SongPlayingFragment : Fragment() {
             }
         }
         fun updateTextViews(songtitle:String,songArtist:String){
+            var songTitleUpdated = songtitle
+            var songArtistUpdated = songArtist
+            if(songtitle.equals("<unknown>",true)){
+                songTitleUpdated = "unknown"
+            }
+            if(songArtist.equals("<unknown>",true)){
+                songArtistUpdated = "unknown"
+            }
             Statified. songTitleView?.setText(songtitle)
             Statified.songArtistView?.setText(songArtist)
         }
@@ -195,7 +203,9 @@ class SongPlayingFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_song_playing,container,false)
-       Statified.seekbar=view?.findViewById(R.id.seekBar)
+        setHasOptionsMenu(true)
+        activity!!.title="Now Playing"
+        Statified.seekbar=view?.findViewById(R.id.seekBar)
         Statified.startTimeText=view?.findViewById(R.id.startTime)
         Statified.endTimeText=view?.findViewById(R.id.endTime)
         Statified.playpauseImageButton=view?.findViewById(R.id.playPauseButton)
@@ -203,7 +213,7 @@ class SongPlayingFragment : Fragment() {
         Statified.previousImageButton=view?.findViewById(R.id.previousButton)
         Statified.loopImageButton=view?.findViewById(R.id.loopButton)
         Statified.songArtistView=view?.findViewById(R.id.songArtist)
-        Statified.songTitleView=view?.findViewById(R.id.songTitle)
+        Statified.songTitleView=view?.findViewById(R.id.songTitleFavScreen)
         Statified.shuffleImageButton=view?.findViewById(R.id.shuffleButton)
         Statified.glView=view?.findViewById(R.id.visualizer_view)
         Statified.fab = view?.findViewById(R.id.favoriteIcon)
@@ -257,7 +267,28 @@ class SongPlayingFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+       menu?.clear()
+        inflater?.inflate(R.menu.song_playing_menu,menu)
         super.onCreateOptionsMenu(menu, inflater)
+
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
+        val item:MenuItem? = menu?.findItem(R.id.action_redirect)
+        item?.isVisible = true
+        val item2:MenuItem? = menu?.findItem(R.id.action_sort)
+        item2?.isVisible = false
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            R.id.action_redirect -> {
+                Statified.myActivity?.onBackPressed()
+                return false
+            }
+        }
+        return false
 
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -395,6 +426,7 @@ class SongPlayingFragment : Fragment() {
         })
         Statified.nextImageButton?.setOnClickListener({
             Statified.currentSongHelper?.isPlaying = true
+            Statified.playpauseImageButton?.setBackgroundResource(R.drawable.pause_icon)
             if (Statified.currentSongHelper?.isShuffle as Boolean) {
                 Staticated.playNext("PlayNextLikeNormalShuffle")
             }

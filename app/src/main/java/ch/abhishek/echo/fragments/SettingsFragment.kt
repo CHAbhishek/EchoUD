@@ -26,12 +26,14 @@ class SettingsFragment : Fragment() {
         var MY_PREFS_NAME = "ShakeFeature"
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        activity!!.title="Settings"
         val view = inflater!!.inflate(R.layout.fragment_settings, container, false)
         shakeSwitch = view?.findViewById(R.id.switchShake)
         return view
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -67,5 +69,7 @@ class SettingsFragment : Fragment() {
     }
     override fun onPrepareOptionsMenu(menu: Menu?) {
         super.onPrepareOptionsMenu(menu)
+        val item = menu?.findItem(R.id.action_sort)
+        item?.isVisible=false
     }
 }
